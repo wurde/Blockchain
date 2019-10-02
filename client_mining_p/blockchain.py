@@ -158,35 +158,44 @@ blockchain = Blockchain()
 
 @app.route('/mine', methods=['POST'])
 def mine():
-    # TODO receive proof of work.
-    # TODO validate or reject proof of work.
+    values = request.get_json()
+    print(f"values: {values}")
+    proof = 0 # TODO receive proof of work.
 
-    # We run the proof of work algorithm to get the next proof...
-    proof = blockchain.proof_of_work(blockchain.last_block)
+    # Validate or reject proof of work.
+    block_string = json.dumps(blockchain.last_block, sort_keys=True).encode()
+    is_valid = blockchain.valid_proof(block_string, proof)
 
-    # We must receive a reward for finding the proof.
-    # The sender is "0" to signify that this node has mined a new coin
-    # The recipient is the current node, it did the mining!
-    # The amount is 1 coin as a reward for mining the next block
-    blockchain.new_transaction(
-        sender="0",
-        recipient=node_identifier,
-        amount=1,
-    )
+    if is_valid:
+        # We must receive a reward for finding the proof.
+        # The sender is "0" to signify that this node has mined a new coin
+        # The recipient is the current node, it did the mining!
+        # The amount is 1 coin as a reward for mining the next block
+        blockchain.new_transaction(
+            sender="0",
+            recipient=node_identifier,
+            amount=1,
+        )
 
-    # Forge the new Block by adding it to the chain
-    previous_hash = blockchain.hash(blockchain.last_block)
-    block = blockchain.new_block(proof, previous_hash)
+        # Forge the new Block by adding it to the chain
+        previous_hash = blockchain.hash(blockchain.last_block)
+        block = blockchain.new_block(proof, previous_hash)
 
-    # Send a response with the new block
-    response = {
-        'message': "New Block Forged",
-        'index': block['index'],
-        'transactions': block['transactions'],
-        'proof': block['proof'],
-        'previous_hash': block['previous_hash'],
-    }
-    return jsonify(response), 200
+        # Send a response with reward
+        response = {
+            'message': "New Block Forged",
+            'index': block['index'],
+            'transactions': block['transactions'],
+            'proof': block['proof'],
+            'previous_hash': block['previous_hash'],
+        }
+        return jsonify(response), 200
+    else:
+        # Send a response with rejection
+        response = {
+            'message': "New proof rejected"
+        }
+        return jsonify(response), 400
 
 
 @app.route('/transactions/new', methods=['POST'])

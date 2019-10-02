@@ -12,16 +12,29 @@ import sys
 # Define method to search for proof
 #
 
-def search_for_proof(last_proof):
+def search_for_proof(block):
     """
     Simple Proof of Work Algorithm
     Find a number p such that hash(last_block_string, p) contains 6 leading
     zeroes
+    :return: A valid proof for the provided block
     """
+
+    block_string = json.dumps(block, sort_keys=True).encode()
     
-    proof = last_proof + 1
+    proof = 0
+    while valid_proof(block_string, proof) is False:
+        proof += 1
 
     return proof
+
+
+def valid_proof(block_string, proof):
+    guess = f'{block_string}{proof}'.encode()
+    guess_hash = hashlib.sha256(guess).hexdigest()
+
+    return guess_hash[:6] == "000"
+
 
 #
 # Execute client
@@ -44,6 +57,8 @@ if __name__ == '__main__':
             res = json.loads(res.content)
             last_block = res['last-block']
 
+            # We run the proof of work algorithm to get the next proof...
+            proof = blockchain.proof_of_work(blockchain.last_block)
             proof = search_for_proof(last_block['proof'])
 
             # block_string = json.dumps(block, sort_keys=True).encode()
