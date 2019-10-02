@@ -98,9 +98,14 @@ class Blockchain(object):
         zeroes
         :return: A valid proof for the provided block
         """
-        # TODO
-        pass
-        # return proof
+
+        block_string = json.dumps(block, sort_keys=True).encode()
+
+        proof = 0
+        while self.valid_proof(block_string, proof) is False:
+            proof += 1
+
+        return proof
 
     @staticmethod
     def valid_proof(block_string, proof):
@@ -114,9 +119,12 @@ class Blockchain(object):
         correct number of leading zeroes.
         :return: True if the resulting hash is a valid proof, False otherwise
         """
-        # TODO
-        pass
-        # return True or False
+
+        guess = f'{block_string}{proof}'.encode()
+        guess_hash = hashlib.sha256(guess).hexdigest()
+
+        # TODO: Change back to six zeroes
+        return guess_hash[:3] == "000"
 
     def valid_chain(self, chain):
         """
@@ -188,6 +196,9 @@ def mine():
 @app.route('/transactions/new', methods=['POST'])
 def new_transaction():
     values = request.get_json()
+
+    if values is None:
+        return 'Missing Values', 400
 
     # Check that the required fields are in the POST'ed data
     required = ['sender', 'recipient', 'amount']
