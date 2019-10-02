@@ -144,10 +144,15 @@ class Blockchain(object):
             print(f'{block}')
             print("\n-------------------\n")
             # Check that the hash of the block is correct
-            # TODO: Return false if hash isn't correct
+            if block['previous_hash'] != self.hash(prev_block):
+                print(f"Invalid previous hash on block {current_index}")
+                return False
 
             # Check that the Proof of Work is correct
-            # TODO: Return false if proof isn't correct
+            block_string = json.dumps(prev_block, sort_keys=True).encode()
+            if not self.valid_proof(block_string, block['proof']):
+                print(f"Found invalid proof on block {current_index}")
+                return False
 
             prev_block = block
             current_index += 1
