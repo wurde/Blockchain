@@ -11,13 +11,13 @@ Furthermore, the amount of work needed to actually mine a block is a bit low.  W
 Modify the server we created to:
 - [x] Remove the `proof_of_work` function from the server.
 - [x] Change `valid_proof` to require *6* leading zeroes.
-- [ ] Add an endpoint called `last_block` that returns the last block in the chain
+- [x] Add an endpoint called `last_block` that returns the last block in the chain
 - [ ] Modify the `mine` endpoint to instead receive and validate or reject a new proof sent by a client.
 - [ ] Return a message indicating success or failure.  Remember, a valid proof should fail for all senders except the first.
 
 *Client Mining*
 Create a client application that will:
-- [ ] Request the latest block from the `last_block` endpoint on the server
+- [x] Request the latest block from the `last_block` endpoint on the server
 - [ ] Run the `proof_of_work` function until a valid proof is found, validating or rejecting each attempt
 - [ ] Print messages indicating that this has started and finished.  (Stretch: Add a timer)
 - [ ] Modify it to generate proofs with *6* leading zeroes.

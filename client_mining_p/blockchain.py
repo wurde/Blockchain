@@ -156,8 +156,11 @@ node_identifier = str(uuid4()).replace('-', '')
 blockchain = Blockchain()
 
 
-@app.route('/mine', methods=['GET'])
+@app.route('/mine', methods=['POST'])
 def mine():
+    # TODO receive proof of work.
+    # TODO validate or reject proof of work.
+
     # We run the proof of work algorithm to get the next proof...
     proof = blockchain.proof_of_work(blockchain.last_block)
 
@@ -221,6 +224,16 @@ def validate_chain():
 
     response = {
         'validity': result
+    }
+    return jsonify(response), 200
+
+
+@app.route('/last-block', methods=['GET'])
+def last_block():
+    result = blockchain.last_block
+
+    response = {
+        'last-block': result
     }
     return jsonify(response), 200
 

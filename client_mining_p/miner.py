@@ -4,6 +4,7 @@
 
 import hashlib
 import requests
+import json
 import sys
 
 #
@@ -24,6 +25,11 @@ if __name__ == '__main__':
         node = sys.argv[1]
     else:
         node = "http://localhost:5000"
+
+    res = requests.get(node + '/last-block')
+    res = json.loads(res.content)
+
+    last_block = res['last-block']
 
     coins_mined = 0
     # Run forever until interrupted
