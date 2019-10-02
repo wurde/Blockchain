@@ -106,8 +106,8 @@ class Blockchain(object):
         guess = f'{block_string}{proof}'.encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
 
-        if guess_hash[:3] == "000":
-            print(f"guess: {guess}, guess_hash {guess_hash} | {guess_hash[:3]} == '000' #=> {guess_hash[:3] == '000'}")
+        # if guess_hash[:3] == "000":
+        #     print(f"guess: {guess}, guess_hash {guess_hash} | {guess_hash[:3]} == '000' #=> {guess_hash[:3] == '000'}")
 
         # return guess_hash[:6] == "000000"
         return guess_hash[:3] == "000"
