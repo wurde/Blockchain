@@ -36,8 +36,8 @@ def valid_proof(block_string, proof):
     # if guess_hash[:3] == "000":
     #     print(f"guess: {guess}, guess_hash {guess_hash} | {guess_hash[:3]} == '000' #=> {guess_hash[:3] == '000'}")
 
-    # return guess_hash[:6] == "000000"
-    return guess_hash[:3] == "000"
+    return guess_hash[:6] == "000000"
+    # return guess_hash[:3] == "000"
 
 
 #
