@@ -33,7 +33,8 @@ def valid_proof(block_string, proof):
     guess = f'{block_string}{proof}'.encode()
     guess_hash = hashlib.sha256(guess).hexdigest()
 
-    return guess_hash[:6] == "000"
+    # return guess_hash[:6] == "000000"
+    return guess_hash[:3] == "000"
 
 
 #
@@ -52,29 +53,24 @@ if __name__ == '__main__':
     t1_start = time.process_time()
     try:
         while True:
-            # Get the last proof from the server and look for a new one
+            # Get the last proof from the server and look for a new one.
             res = requests.get(node + '/last-block')
             res = json.loads(res.content)
-            last_block = res['last-block']
 
             # We run the proof of work algorithm to get the next proof...
-            proof = blockchain.proof_of_work(blockchain.last_block)
-            proof = search_for_proof(last_block['proof'])
-
-            # block_string = json.dumps(block, sort_keys=True).encode()
-            # while self.valid_proof(block_string, proof) is False:
-            #     proof += 1
+            proof = search_for_proof(res['last-block'])
 
             # When found, POST it to the server.
-            # res = requests.post(node + '/mine', { "proof": new_proof })
-            # res_content = json.loads(res.content)
+            print(f"proof {proof}")
+            res = requests.post(node + '/mine', { "proof": proof })
+            res_content = json.loads(res.content)
 
             # If the server responds with 'New Block Forged'.
-            # if res.status_code == 200 and res_content['message'] == 'New Block Forged':
-            #     coins_mined += 1
-            #     print(f"Total Coins Mined: {coins_mined}")
-            # else:
-            #     print(res_content['message'])
+            if res.status_code == 200 and res_content['message'] == 'New Block Forged':
+                coins_mined += 1
+                print(f"Total Coins Mined: {coins_mined}")
+            else:
+                print(res_content['message'])
     except:
         print("Mining has ended.")
         t1_stop = time.process_time()
