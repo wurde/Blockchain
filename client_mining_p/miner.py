@@ -1,11 +1,22 @@
+#
+# Dependencies
+#
+
 import hashlib
 import requests
-
 import sys
 
+#
+# Define method to search for proof
+#
 
-# TODO: Implement functionality to search for a proof 
+def search_for_proof():
+    # TODO: Implement functionality to search for a proof 
+    return 0
 
+#
+# Execute client
+#
 
 if __name__ == '__main__':
     # What node are we interacting with?
