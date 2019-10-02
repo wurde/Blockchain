@@ -1,10 +1,16 @@
+#
+# Dependencies
+#
+
 import hashlib
 import json
 from time import time
 from uuid import uuid4
-
 from flask import Flask, jsonify, request
 
+#
+# Define class
+#
 
 class Blockchain(object):
     def __init__(self):
@@ -140,6 +146,9 @@ class Blockchain(object):
 
         return True
 
+#
+# Define a web API using Flask.
+#
 
 # Instantiate our Node
 app = Flask(__name__)
