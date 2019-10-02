@@ -33,7 +33,8 @@ def valid_proof(block_string, proof):
     guess = f'{block_string}{proof}'.encode()
     guess_hash = hashlib.sha256(guess).hexdigest()
 
-    print(f"guess_hash {guess_hash} | {guess_hash[:3]} == '000' #=> {guess_hash[:3] == '000'}")
+    if guess_hash[:3] == "000":
+        print(f"guess: {guess}, guess_hash {guess_hash} | {guess_hash[:3]} == '000' #=> {guess_hash[:3] == '000'}")
 
     # return guess_hash[:6] == "000000"
     return guess_hash[:3] == "000"
@@ -64,8 +65,7 @@ if __name__ == '__main__':
 
             # When found, POST it to the server.
             print(f"proof {proof}")
-            res = requests.post(node + '/mine', data=json.dumps({ "proof": proof }))
-            print(f"res.content {res.content}")
+            res = requests.post(node + '/mine', json={ "proof": proof })
             res_content = json.loads(res.content)
 
             # If the server responds with 'New Block Forged'.
