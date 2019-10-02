@@ -70,7 +70,6 @@ class Blockchain(object):
         "return": <str>
         """
 
-
         # json.dumps converts json into a string
         # hashlib.sha246 is used to createa hash
         # It requires a `bytes-like` object, which is what
@@ -106,6 +105,7 @@ class Blockchain(object):
 
         guess = f'{block_string}{proof}'.encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
+        print(f"guess_hash {guess_hash} | {guess_hash[:3]} == '000' #=> {guess_hash[:3] == '000'}")
 
         # return guess_hash[:6] == "000000"
         return guess_hash[:3] == "000"
@@ -159,13 +159,15 @@ blockchain = Blockchain()
 
 @app.route('/mine', methods=['POST'])
 def mine():
-    values = request.get_json()
+    values = request.json
+    # values = request.get_json()
     print(f"values: {values}")
-    proof = 0 # TODO receive proof of work.
+    proof = values['proof']
 
     # Validate or reject proof of work.
-    block_string = json.dumps(blockchain.last_block, sort_keys=True).encode()
-    is_valid = blockchain.valid_proof(block_string, proof)
+    if proof:
+        block_string = json.dumps(blockchain.last_block, sort_keys=True).encode()
+        is_valid = blockchain.valid_proof(block_string, proof)
 
     if is_valid:
         # We must receive a reward for finding the proof.

@@ -33,6 +33,8 @@ def valid_proof(block_string, proof):
     guess = f'{block_string}{proof}'.encode()
     guess_hash = hashlib.sha256(guess).hexdigest()
 
+    print(f"guess_hash {guess_hash} | {guess_hash[:3]} == '000' #=> {guess_hash[:3] == '000'}")
+
     # return guess_hash[:6] == "000000"
     return guess_hash[:3] == "000"
 
@@ -62,7 +64,8 @@ if __name__ == '__main__':
 
             # When found, POST it to the server.
             print(f"proof {proof}")
-            res = requests.post(node + '/mine', { "proof": proof })
+            res = requests.post(node + '/mine', data=json.dumps({ "proof": proof }))
+            print(f"res.content {res.content}")
             res_content = json.loads(res.content)
 
             # If the server responds with 'New Block Forged'.
@@ -71,7 +74,7 @@ if __name__ == '__main__':
                 print(f"Total Coins Mined: {coins_mined}")
             else:
                 print(res_content['message'])
-    except:
-        print("Mining has ended.")
+    except Exception as e:
+        print("Mining has ended.", e)
         t1_stop = time.process_time()
         print("Elapsed time: %.1f seconds" % ((t1_stop-t1_start)))
