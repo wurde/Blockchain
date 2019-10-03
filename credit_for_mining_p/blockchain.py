@@ -205,7 +205,7 @@ def mine():
     values = request.json
 
     # Check that the required fields are in the POST'ed data
-    required = ['proof', 'id']
+    required = ['proof']
     if not all(k in values for k in required):
         return 'Missing Values', 400
 
@@ -225,7 +225,7 @@ def mine():
         # The amount is 1 coin as a reward for mining the next block
         blockchain.new_transaction(
             sender="0",
-            recipient=node_identifier,
+            recipient=values['id'],
             amount=1,
         )
 
