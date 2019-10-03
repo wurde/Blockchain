@@ -77,29 +77,29 @@ if __name__ == '__main__':
         file.write(string)
         file.close()
 
-    # coins_mined = 0
-    # print("Mining has started.")
-    # t1_start = time.process_time()
-    # try:
-    #     while True:
-    #         # Get the last proof from the server and look for a new one.
-    #         res = requests.get(node + '/last-block')
-    #         res = json.loads(res.content)
+    coins_mined = 0
+    print("Mining has started.")
+    t1_start = time.process_time()
+    try:
+        while True:
+            # Get the last proof from the server and look for a new one.
+            res = requests.get(node + '/last-block')
+            res = json.loads(res.content)
 
-    #         # We run the proof of work algorithm to get the next proof...
-    #         proof = search_for_proof(res['last-block'])
+            # We run the proof of work algorithm to get the next proof...
+            proof = search_for_proof(res['last-block'])
 
-    #         # When found, POST it to the server.
-    #         res = requests.post(node + '/mine', json={ "proof": proof })
-    #         res_content = json.loads(res.content)
+            # When found, POST it to the server.
+            res = requests.post(node + '/mine', json={ "proof": proof, "id": my_id })
+            res_content = json.loads(res.content)
 
-    #         # If the server responds with 'New Block Forged'.
-    #         if res.status_code == 200 and res_content['message'] == 'New Block Forged':
-    #             coins_mined += 1
-    #             print(f"Total Coins Mined: {coins_mined}")
-    #         else:
-    #             print(res_content['message'])
-    # except Exception as e:
-    #     print("Mining has ended.", e)
-    #     t1_stop = time.process_time()
-    #     print("Elapsed time: %.1f seconds" % ((t1_stop-t1_start)))
+            # If the server responds with 'New Block Forged'.
+            if res.status_code == 200 and res_content['message'] == 'New Block Forged':
+                coins_mined += 1
+                print(f"Total Coins Mined: {coins_mined}")
+            else:
+                print(res_content['message'])
+    except Exception as e:
+        print("Mining has ended.", e)
+        t1_stop = time.process_time()
+        print("Elapsed time: %.1f seconds" % ((t1_stop-t1_start)))
