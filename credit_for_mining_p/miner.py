@@ -7,6 +7,7 @@ import requests
 import json
 import time
 import sys
+from uuid import uuid4
 
 #
 # Define method to search for proof
