@@ -15,4 +15,4 @@ Modify the server we created to:
 - [x] Complete the endpoint to receive a new block from one of the nodes in its list of registered nodes, *validate it*, and add it to the chain
 - [x] Validate the new block by checking the index, previous hash, and proof
 - [x] Check for consensus if the block is invalid
-- [ ] To support this add a method to `blockchain` that requests the chain from each peer in the network, and replaces the current chain if one is found that is both valid and longer.
+- [x] To support this add a method to `blockchain` that requests the chain from each peer in the network, and replaces the current chain if one is found that is both valid and longer.
