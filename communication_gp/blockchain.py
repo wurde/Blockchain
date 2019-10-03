@@ -2,8 +2,9 @@
 # Dependencies
 #
 
-import hashlib
+import sys
 import json
+import hashlib
 from time import time
 from uuid import uuid4
 from flask import Flask, jsonify, request
@@ -18,7 +19,24 @@ class Blockchain(object):
         self.current_transactions = []
         self.nodes = set()
 
-        self.new_block(previous_hash=1, proof=100)
+        self.create_genesis_block()
+
+    def create_genesis_block(self):
+        """
+        Create the genesis block
+
+        These are hardcoded into _most_ if not all blockchain protocols
+        """
+
+        block = {
+            'index': 1,
+            'timestamp': 1,
+            'transactions': [],
+            'proof': 1,
+            'previous_hash': 1,
+        }
+
+        self.chain.append(block)
 
     def new_block(self, proof, previous_hash=None):
         """
@@ -276,9 +294,9 @@ def new_block():
 
 @app.route('/nodes/register', methods=['POST'])
 def register_nodes():
-
     values = request.get_json()
     nodes = values.get('nodes')
+
     if nodes is None:
         return "Error: Please supply a valid list of nodes", 400
 
