@@ -319,7 +319,8 @@ def new_block():
 
     old_block = blockchain.last_block
     # Check that the new block index is 1 higher than our last block
-    if new_block['index'] == old_block['index'] + 1:
+    # if new_block['index'] == old_block['index'] + 1:
+    if False:
         if new_block['previous_hash'] == blockchain.hash(old_block):
             block_string = json.dumps(old_block, sort_keys=True).encode()
             # Check that it has a valid proof.
@@ -330,11 +331,20 @@ def new_block():
                 return 'Block Rejected', 400
     # Otherwise, check for consensus
     else:
-        # Their index is one greater.  Block could be invalid.  We could be behind.
+        # Their index is one greater.  Block could be invalid or we could be behind.
 
         # Do the consensus process:
         # Poll all of the nodes in our chain, and get the biggest one:
-        pass
+        current_chain = blockchain.chain
+        for chain_node in blockchain.nodes:
+            # Get the node's chain
+            res = requests.get(node + '/chain')
+            res = json.loads(res.content)
+            if 'chain' in res and 'length' in res:
+                isvalid = blockchain.valid_proof(res['chain'])
+                if isvalid and res['length'] > len(current_chain)
+                    current_chain = res['chain']
+        blockchain.chain = current_chain
 
     # Don't forget to send a response before asking for the full
     # chain from a server awaiting a response.
