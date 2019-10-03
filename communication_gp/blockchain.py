@@ -296,17 +296,38 @@ def last_block():
 def new_block():
     values = request.get_json()
 
-    # Check that the required fields are in the POST'ed data
-    required = ['block']
-    if not all(k in values for k in required):
-        return 'Missing Values', 400
-
     # TODO: Verify that the sender is one of our peers
 
-    # TODO: Check that the new block index is 1 higher than our last block
-    # that it has a valid proof
+    # Check that the required fields are in the POST'ed data
+    required_block = ['block']
+    if not all(k in values for k in required_block):
+        return 'Missing Values', 400
 
-    # TODO: Otherwise, check for consensus
+    new_block = values['block']
+
+    required_values = ['index', 'previous_hash']
+    if not all(k in new_block for k in required_values):
+        return 'Missing Values', 400
+
+    old_block = blockchain.last_block
+    # Check that the new block index is 1 higher than our last block
+    if new_block['index'] == old_block['index'] + 1:
+        if new_block['previous_hash'] == blockchain.hash(old_block):
+            block_string = json.dumps(old_block, sort_keys=True).encode()
+            # Check that it has a valid proof.
+            if blockchain.valid_proof(block_string, new_block['proof']):
+                blockchain.add_block(new_block)
+                return 'Block Accepted', 200
+            else:
+                return 'Block Rejected', 400
+    # Otherwise, check for consensus
+    else:
+        # Their index is one greater.  Block could be invalid.  We could be behind.
+
+        # Do the consensus process:
+        # Poll all of the nodes in our chain, and get the biggest one:
+        pass
+
     # Don't forget to send a response before asking for the full
     # chain from a server awaiting a response.
 
