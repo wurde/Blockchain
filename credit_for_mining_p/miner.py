@@ -7,6 +7,7 @@ import requests
 import json
 import time
 import sys
+import os
 from uuid import uuid4
 
 #
@@ -62,29 +63,43 @@ if __name__ == '__main__':
     else:
         node = "http://localhost:5000"
 
-    coins_mined = 0
-    print("Mining has started.")
-    t1_start = time.process_time()
-    try:
-        while True:
-            # Get the last proof from the server and look for a new one.
-            res = requests.get(node + '/last-block')
-            res = json.loads(res.content)
+    # Ensure client has UUID
+    id_path = os.path.join(os.path.dirname(__file__), 'my_id')
+    if os.path.isfile(id_path):
+        file = open(id_path, 'r')
+        my_id = file.read()
+        file.close()
+    else:
+        file = open(id_path, 'w')
+        string = str(uuid4())
+        string = string.replace('-', '')
+        my_id = string
+        file.write(string)
+        file.close()
 
-            # We run the proof of work algorithm to get the next proof...
-            proof = search_for_proof(res['last-block'])
+    # coins_mined = 0
+    # print("Mining has started.")
+    # t1_start = time.process_time()
+    # try:
+    #     while True:
+    #         # Get the last proof from the server and look for a new one.
+    #         res = requests.get(node + '/last-block')
+    #         res = json.loads(res.content)
 
-            # When found, POST it to the server.
-            res = requests.post(node + '/mine', json={ "proof": proof })
-            res_content = json.loads(res.content)
+    #         # We run the proof of work algorithm to get the next proof...
+    #         proof = search_for_proof(res['last-block'])
 
-            # If the server responds with 'New Block Forged'.
-            if res.status_code == 200 and res_content['message'] == 'New Block Forged':
-                coins_mined += 1
-                print(f"Total Coins Mined: {coins_mined}")
-            else:
-                print(res_content['message'])
-    except Exception as e:
-        print("Mining has ended.", e)
-        t1_stop = time.process_time()
-        print("Elapsed time: %.1f seconds" % ((t1_stop-t1_start)))
+    #         # When found, POST it to the server.
+    #         res = requests.post(node + '/mine', json={ "proof": proof })
+    #         res_content = json.loads(res.content)
+
+    #         # If the server responds with 'New Block Forged'.
+    #         if res.status_code == 200 and res_content['message'] == 'New Block Forged':
+    #             coins_mined += 1
+    #             print(f"Total Coins Mined: {coins_mined}")
+    #         else:
+    #             print(res_content['message'])
+    # except Exception as e:
+    #     print("Mining has ended.", e)
+    #     t1_stop = time.process_time()
+    #     print("Elapsed time: %.1f seconds" % ((t1_stop-t1_start)))
