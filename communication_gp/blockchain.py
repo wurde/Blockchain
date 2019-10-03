@@ -150,8 +150,8 @@ class Blockchain(object):
         # if guess_hash[:3] == "000":
         #     print(f"guess: {guess}, guess_hash {guess_hash} | {guess_hash[:3]} == '000' #=> {guess_hash[:3] == '000'}")
 
-        return guess_hash[:6] == "000000"
-        # return guess_hash[:3] == "000"
+        # return guess_hash[:6] == "000000"
+        return guess_hash[:3] == "000"
 
     def valid_chain(self, chain):
         """
@@ -320,8 +320,7 @@ def new_block():
 
     old_block = blockchain.last_block
     # Check that the new block index is 1 higher than our last block
-    # if new_block['index'] == old_block['index'] + 1:
-    if False:
+    if new_block['index'] == old_block['index'] + 1:
         # Index is correct.
         if new_block['previous_hash'] == blockchain.hash(old_block):
             # Hash is correct.
