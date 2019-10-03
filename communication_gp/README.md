@@ -12,7 +12,7 @@ Be sure to review their code!
 Modify the server we created to:
 - [x] Hard code the genesis block so that all servers using this code can share a chain
 - [x] Add a method to `Blockchain` and use it so that when a new block is mined, the server alerts all nodes in its list of registered nodes to add the new block
-- [ ] Complete the endpoint to receive a new block from one of the nodes in its list of registered nodes, *validate it*, and add it to the chain
-- [ ] Validate the new block by checking the index, previous hash, and proof
-- [ ] Check for consensus if the block is invalid
+- [x] Complete the endpoint to receive a new block from one of the nodes in its list of registered nodes, *validate it*, and add it to the chain
+- [x] Validate the new block by checking the index, previous hash, and proof
+- [x] Check for consensus if the block is invalid
 - [ ] To support this add a method to `blockchain` that requests the chain from each peer in the network, and replaces the current chain if one is found that is both valid and longer.

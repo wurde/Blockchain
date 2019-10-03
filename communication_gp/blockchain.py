@@ -5,6 +5,7 @@
 import sys
 import json
 import hashlib
+import requests
 from time import time
 from uuid import uuid4
 from flask import Flask, jsonify, request
@@ -321,14 +322,15 @@ def new_block():
     # Check that the new block index is 1 higher than our last block
     # if new_block['index'] == old_block['index'] + 1:
     if False:
+        # Index is correct.
         if new_block['previous_hash'] == blockchain.hash(old_block):
+            # Hash is correct.
             block_string = json.dumps(old_block, sort_keys=True).encode()
-            # Check that it has a valid proof.
             if blockchain.valid_proof(block_string, new_block['proof']):
+                # Proof is correct.
                 blockchain.add_block(new_block)
                 return 'Block Accepted', 200
-            else:
-                return 'Block Rejected', 400
+        return 'Block Rejected', 400
     # Otherwise, check for consensus
     else:
         # Their index is one greater.  Block could be invalid or we could be behind.
@@ -341,15 +343,12 @@ def new_block():
             res = requests.get(node + '/chain')
             res = json.loads(res.content)
             if 'chain' in res and 'length' in res:
-                isvalid = blockchain.valid_proof(res['chain'])
-                if isvalid and res['length'] > len(current_chain)
+                block_string = json.dumps(old_block, sort_keys=True).encode()
+                isvalid = blockchain.valid_proof(block_string, res['chain'])
+                if isvalid and res['length'] > len(current_chain):
                     current_chain = res['chain']
         blockchain.chain = current_chain
-
-    # Don't forget to send a response before asking for the full
-    # chain from a server awaiting a response.
-
-    return response, 200
+        return 'Consensus Performed', 200
 
 
 @app.route('/nodes/register', methods=['POST'])
