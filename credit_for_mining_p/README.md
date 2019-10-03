@@ -14,4 +14,4 @@ Modify the client we created to:
 - [x] Check for a file called `my_id`, open it if found, and load the ID
 - [x] Otherwise, create a UUID ID, removing `-`s and save it to a the file
 - [ ] When a solution is found, send the ID in the POST as `id`
-- [ ] Note: You will have to research how to create, save, and load files in Python!
+- [x] Note: You will have to research how to create, save, and load files in Python!
