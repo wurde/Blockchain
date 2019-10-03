@@ -334,21 +334,23 @@ def new_block():
     # Otherwise, check for consensus
     else:
         # Their index is one greater.  Block could be invalid or we could be behind.
-
-        # Do the consensus process:
-        # Poll all of the nodes in our chain, and get the biggest one:
-        current_chain = blockchain.chain
-        for chain_node in blockchain.nodes:
-            # Get the node's chain
-            res = requests.get(node + '/chain')
-            res = json.loads(res.content)
-            if 'chain' in res and 'length' in res:
-                block_string = json.dumps(old_block, sort_keys=True).encode()
-                isvalid = blockchain.valid_proof(block_string, res['chain'])
-                if isvalid and res['length'] > len(current_chain):
-                    current_chain = res['chain']
-        blockchain.chain = current_chain
-        return 'Consensus Performed', 200
+        if new_block['index'] > old_block['index'] + 1:
+            # Do the consensus process:
+            # Poll all of the nodes in our chain, and get the biggest one:
+            current_chain = blockchain.chain
+            for chain_node in blockchain.nodes:
+                # Get the node's chain
+                res = requests.get(node + '/chain')
+                res = json.loads(res.content)
+                if 'chain' in res and 'length' in res:
+                    block_string = json.dumps(old_block, sort_keys=True).encode()
+                    isvalid = blockchain.valid_proof(block_string, res['chain'])
+                    if isvalid and res['length'] > len(current_chain):
+                        current_chain = res['chain']
+            blockchain.chain = current_chain
+            return 'Consensus Performed', 200
+        else:
+            return 'Block Rejected', 400
 
 
 @app.route('/nodes/register', methods=['POST'])
