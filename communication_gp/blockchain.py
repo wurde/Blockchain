@@ -100,6 +100,7 @@ class Blockchain(object):
         post_data = {"block": block}
 
         for node in neighbors:
+            print(f"BROADCAST {node} POST /block/new {post_data}")
             response = requests.post(f'http://{node}/block/new', json=post_data)
 
     @staticmethod
@@ -310,7 +311,7 @@ def new_block():
 
     # Verify that the sender is one of our peers
     if blockchain.verify_node(node) is False:
-        return 'Node Unregistered', 400
+        return 'Unregistered Node', 400
 
     new_block = values['block']
 
