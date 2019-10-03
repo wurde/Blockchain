@@ -204,6 +204,11 @@ blockchain = Blockchain()
 def mine():
     values = request.json
 
+    # Check that the required fields are in the POST'ed data
+    required = ['proof', 'id']
+    if not all(k in values for k in required):
+        return 'Missing Values', 400
+
     if 'proof' in values:
         proof = values['proof']
 
