@@ -84,6 +84,19 @@ class Blockchain(object):
         parsed_url = urlparse(node)
         self.nodes.add(parsed_url.netloc)
 
+    def broadcast_new_block(self, block):
+        """
+        Alert neighbors that a new block has been mined and they should add it to their chain
+        as well
+        """
+
+        neighbors = self.nodes
+
+        post_data = {"block": block}
+
+        for node in neighbors:
+            response = requests.post(f'http://{node}/block/new', json=post_data)
+
     @staticmethod
     def hash(block):
         """
@@ -209,6 +222,8 @@ def mine():
         # Forge the new Block by adding it to the chain
         previous_hash = blockchain.hash(blockchain.last_block)
         block = blockchain.new_block(proof, previous_hash)
+
+        blockchain.broadcast_new_block(block)
 
         # Send a response with reward
         response = {
