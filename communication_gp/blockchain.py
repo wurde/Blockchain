@@ -8,6 +8,7 @@ import hashlib
 from time import time
 from uuid import uuid4
 from flask import Flask, jsonify, request
+from urllib.parse import urlparse
 
 #
 # Define data structure
@@ -78,6 +79,10 @@ class Blockchain(object):
         })
 
         return self.last_block['index'] + 1
+
+    def register_node(self, node):
+        parsed_url = urlparse(node)
+        self.nodes.add(parsed_url.netloc)
 
     @staticmethod
     def hash(block):
