@@ -84,6 +84,10 @@ class Blockchain(object):
         parsed_url = urlparse(node)
         self.nodes.add(parsed_url.netloc)
 
+    def verify_node(self, node):
+        parsed_url = urlparse(node)
+        return parsed_url.netloc in self.nodes
+
     def broadcast_new_block(self, block):
         """
         Alert neighbors that a new block has been mined and they should add it to their chain
@@ -296,12 +300,16 @@ def last_block():
 def new_block():
     values = request.get_json()
 
-    # TODO: Verify that the sender is one of our peers
-
     # Check that the required fields are in the POST'ed data
-    required_block = ['block']
+    required_block = ['block', 'node']
     if not all(k in values for k in required_block):
         return 'Missing Values', 400
+
+    node = values['node']
+
+    # Verify that the sender is one of our peers
+    if blockchain.verify_node(node) is False:
+        return 'Node Unregistered', 400
 
     new_block = values['block']
 
@@ -332,6 +340,7 @@ def new_block():
     # chain from a server awaiting a response.
 
     return response, 200
+
 
 @app.route('/nodes/register', methods=['POST'])
 def register_nodes():
