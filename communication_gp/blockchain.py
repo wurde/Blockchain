@@ -292,9 +292,6 @@ def register_nodes():
     return jsonify(response), 201
 
 
-# TODO: Get rid of the previous if __main__ and use this so we can change
-# ports via the command line.  Note that this is not robust and will
-# not catch errors
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         port = int(sys.argv[1])
