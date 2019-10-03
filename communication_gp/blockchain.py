@@ -334,7 +334,7 @@ def new_block():
     # Otherwise, check for consensus
     else:
         # Their index is one greater.  Block could be invalid or we could be behind.
-        if new_block['index'] > old_block['index'] + 1:
+        if new_block['index'] >= old_block['index'] + 1:
             # Do the consensus process:
             # Poll all of the nodes in our chain, and get the biggest one:
             current_chain = blockchain.chain
